@@ -11,7 +11,7 @@ public class monotonialgorithm {
     ArrayList<Pair<point, point>> diagonal = new ArrayList<>();
     public ArrayList<Pair<point, point>> makeMonotone(polygon p) {
 
-        p.makecounterclock();
+        p.makecounterclockwise();
         PriorityQueue<vertex> Q = new PriorityQueue<vertex>((v1, v2) -> {
             if (v1.data.Y > v2.data.Y || v1.data.Y == v2.data.Y && v1.data.X > v2.data.X)
                 return -1;
@@ -34,9 +34,7 @@ public class monotonialgorithm {
     void handle(polygon p, vertex v_i) {
 
         int i = p.verteces.indexOf(v_i);
-        int i_1 = 0;
-..  ...  if(i == 0) i_1= p.verteces.size()-1
-.......  else i_1= i-1;
+        int i_1 = (i == 0) ? (p.verteces.size()-1) : (i-1);
         edge e_i, e_j, e_i_1;
         vertex helper_e_i_1, helper_e_j;
 
@@ -100,6 +98,22 @@ public class monotonialgorithm {
 
 
         }
+    }
+    edge find_e_j(polygon p, vertex v_i){
+        edge temp,e_j = null;
+        for (int j : binarytree.keySet()) {
+            temp = binarytree.get(j);
+            if (temp.intersectswap(v_i.data.Y, p, p.verteces.indexOf(v_i)) &&
+                    temp.leftside(p, p.edges.indexOf(temp), v_i)) {
+                if (e_j == null) {
+                    e_j = temp;
+                }
+                if (temp.rightside(p, p.verteces.indexOf(temp.helper), e_j, v_i.data.Y)) {
+                    e_j = temp;
+                }
+            }
+        }
+        return e_j;
     }
 
 }
