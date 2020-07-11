@@ -10,49 +10,65 @@ public class triangulation {
     ArrayList<Pair<point,point>> doTriangulation(polygon p){
 
         p.sortvertex(p);
-        Stack<point> s= new Stack<>();
-        s.push(p.sortedlist.get(0).data);
-        s.push(p.sortedlist.get(1).data);
+        for (vertex v:
+             p.sortedlist) {
+            System.out.println(v.data.index);
+        }
+        System.out.println("begin ..........");
+        Stack<point> st = new Stack<>();
+        st.push(p.sortedlist.get(0).data);
+        st.push(p.sortedlist.get(1).data);
+        for (point point:
+                st) {
+            System.out.println(point.index);
+        }
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
         for(int i = 2; i < p.sortedlist.size() - 1; i++){
-            point t = s.peek();
+            point t = st.peek();
             point cur = p.sortedlist.get(i).data;
-            point top ;
+            point last ;
             if(p.findchain(p,cur) == p.findchain(p,t)){
-                top = s.peek();
-                s.pop();
-                while(!s.empty()){
-                    t = s.peek();
+                last = st.peek();
+                st.pop();
+                while(!st.empty()){
+                    t = st.peek();
                     boolean is_right = p.findchain(p,cur);
-                    boolean turn ;
-                    if((top.X - cur.X) * (t.Y - cur.Y) - (top.Y - cur.Y) * (t.X - cur.X)>0) )
-                        turn=true 
-                    else turn=false;
-                    
-                    if(!is_right && turn) {
-                    	break;
+                    double val = (last.X - cur.X) * (t.Y - cur.Y) - (last.Y - cur.Y) * (t.X - cur.X);
+                    boolean turn = (val>0) ? true : false;
+                    if(is_right && turn || !is_right && !turn){
+                        diagonal.add(new Pair(cur,t));
+                        st.pop();
+                        last = t;
                     }
-                    if(is_right && !turn){
-                        break;
-                    }
-                    diagonal.add(new Pair(cur,t));
-                    s.pop();
-                    top = t;
-                    
+                    else break;
                 }
-                s.push(top);
-                s.push(cur);
+
+                st.push(last);
+                st.push(cur);
+                for (point point:
+                        st) {
+                    System.out.println(point.index);
+                }
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
             }
             else{
-                while(!s.empty()){
+                while(!st.empty()){
                     t = st.peek();
-                    s.pop();
+                    st.pop();
                     diagonal.add(new Pair<>(cur,t));
                 }
-                s.push(p.sortedlist.get(i-1).data);
-                s.push(p.sortedlist.get(i).data);
+
+                st.push(p.sortedlist.get(i-1).data);
+                st.push(p.sortedlist.get(i).data);
+                for (point point:
+                        st) {
+                    System.out.println(point.index);
+                }
+                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
             }
+
         }
-        if(!s.empty()) s.pop();
+        if(!st.empty()) st.pop();
         return diagonal;
     }
 }
